@@ -23,8 +23,9 @@
 
 'use strict';
 
+import PropTypes from 'prop-types';
 import * as React from 'react';
-import {requireNativeComponent, StyleSheet} from 'react-native';
+import {requireNativeComponent, StyleSheet, ViewPropTypes} from 'react-native';
 
 import type {ShareContent} from './models/FBShareContent';
 
@@ -48,6 +49,13 @@ class ShareButton extends React.Component<{
   }
 }
 
+/* $FlowFixMe(>=0.43.0) - Remove this comment to see errors found when Flow
+ * v0.43.0 was deployed */
+ShareButton.propTypes = {
+  ...ViewPropTypes,
+  shareContent: PropTypes.object,
+};
+
 const styles = StyleSheet.create({
   defaultButtonStyle: {
     height: 30,
@@ -59,6 +67,9 @@ ShareButton.defaultProps = {
   style: styles.defaultButtonStyle,
 };
 
-const RCTFBShareButton = requireNativeComponent('RCTFBShareButton');
+const RCTFBShareButton = requireNativeComponent(
+  'RCTFBShareButton',
+  ShareButton,
+);
 
 module.exports = ShareButton;

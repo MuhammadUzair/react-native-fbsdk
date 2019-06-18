@@ -22,50 +22,20 @@
  */
 'use strict';
 
-import PropTypes from 'prop-types';
-import * as React from 'react';
-import {requireNativeComponent, StyleSheet, ViewPropTypes} from 'react-native';
+type ActionType = 'unknown' | 'open_graph' | 'page';
 
-import type {ShareContent} from './models/FBShareContent';
-
-class SendButton extends React.Component<{
+/**
+ * A base interface for content to be shared.
+ */
+export type ObjectIdAndType = {
   /**
-   * Content to be shared.
+   * The object ID, this can be a URL or a Facebook ID.
    */
-  shareContent: ShareContent,
+  objectId: string,
 
   /**
-   * View style, if any.
+   * Encapsulates the valid values for the facebook:object_type
+   * attribute for a LikeView
    */
-  style?: any,
-}> {
-  static defaultProps: {
-    style: typeof styles.defaultButtonStyle,
-  };
-
-  render() {
-    return <RCTFBSendButton {...this.props} />;
-  }
-}
-
-/* $FlowFixMe(>=0.43.0) - Remove this comment to see errors found when Flow
- * v0.43.0 was deployed */
-SendButton.propTypes = {
-  ...ViewPropTypes,
-  shareContent: PropTypes.object,
+  objectType: ActionType,
 };
-
-const styles = StyleSheet.create({
-  defaultButtonStyle: {
-    height: 30,
-    width: 80,
-  },
-});
-
-SendButton.defaultProps = {
-  style: styles.defaultButtonStyle,
-};
-
-const RCTFBSendButton = requireNativeComponent('RCTFBSendButton', SendButton);
-
-module.exports = SendButton;

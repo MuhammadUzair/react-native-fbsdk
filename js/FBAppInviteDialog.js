@@ -22,50 +22,21 @@
  */
 'use strict';
 
-import PropTypes from 'prop-types';
-import * as React from 'react';
-import {requireNativeComponent, StyleSheet, ViewPropTypes} from 'react-native';
+const AppInviteDialog = require('react-native').NativeModules.FBAppInviteDialog;
+import type {AppInviteContent} from './models/FBAppInviteContent';
 
-import type {ShareContent} from './models/FBShareContent';
-
-class SendButton extends React.Component<{
+module.exports = {
   /**
-   * Content to be shared.
+   * Check if the dialog can be shown.
    */
-  shareContent: ShareContent,
-
-  /**
-   * View style, if any.
-   */
-  style?: any,
-}> {
-  static defaultProps: {
-    style: typeof styles.defaultButtonStyle,
-  };
-
-  render() {
-    return <RCTFBSendButton {...this.props} />;
-  }
-}
-
-/* $FlowFixMe(>=0.43.0) - Remove this comment to see errors found when Flow
- * v0.43.0 was deployed */
-SendButton.propTypes = {
-  ...ViewPropTypes,
-  shareContent: PropTypes.object,
-};
-
-const styles = StyleSheet.create({
-  defaultButtonStyle: {
-    height: 30,
-    width: 80,
+  canShow(): Promise<any> {
+    return AppInviteDialog.canShow();
   },
-});
 
-SendButton.defaultProps = {
-  style: styles.defaultButtonStyle,
+  /**
+   * Shows the dialog using the specified content.
+   */
+  show(appInviteContent: AppInviteContent): Promise<any> {
+    return AppInviteDialog.show(appInviteContent);
+  },
 };
-
-const RCTFBSendButton = requireNativeComponent('RCTFBSendButton', SendButton);
-
-module.exports = SendButton;

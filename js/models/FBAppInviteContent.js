@@ -22,50 +22,29 @@
  */
 'use strict';
 
-import PropTypes from 'prop-types';
-import * as React from 'react';
-import {requireNativeComponent, StyleSheet, ViewPropTypes} from 'react-native';
-
-import type {ShareContent} from './models/FBShareContent';
-
-class SendButton extends React.Component<{
+/**
+ * A model for app invites.
+ */
+export type AppInviteContent = {
   /**
-   * Content to be shared.
+   * A URL to a preview image that will be displayed with the app invite.
+   * This is optional. If you don't include it, a fallback image will be used.
    */
-  shareContent: ShareContent,
-
+  previewImageUrl?: string,
   /**
-   * View style, if any.
+   * An app link target that will be used as a target when the user accepts the invite.
    */
-  style?: any,
-}> {
-  static defaultProps: {
-    style: typeof styles.defaultButtonStyle,
-  };
-
-  render() {
-    return <RCTFBSendButton {...this.props} />;
-  }
-}
-
-/* $FlowFixMe(>=0.43.0) - Remove this comment to see errors found when Flow
- * v0.43.0 was deployed */
-SendButton.propTypes = {
-  ...ViewPropTypes,
-  shareContent: PropTypes.object,
+  applinkUrl: string,
+  /**
+   * Promotional code to be displayed while sending and receiving the invite.
+   * This is optional. This can be between 0 and 10 characters long and can contain
+   * alphanumeric characters only. To set a promo code, you need to set promo text.
+   */
+  promotionCode?: string,
+  /**
+   * Promotional text to be displayed while sending and receiving the invite.
+   * This is optional. This can be between 0 and 80 characters long and can contain
+   * alphanumeric and spaces only.
+   */
+  promotionText?: string,
 };
-
-const styles = StyleSheet.create({
-  defaultButtonStyle: {
-    height: 30,
-    width: 80,
-  },
-});
-
-SendButton.defaultProps = {
-  style: styles.defaultButtonStyle,
-};
-
-const RCTFBSendButton = requireNativeComponent('RCTFBSendButton', SendButton);
-
-module.exports = SendButton;

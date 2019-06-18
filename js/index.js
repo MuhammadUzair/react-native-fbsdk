@@ -42,6 +42,9 @@ module.exports = {
   get AppEventsLogger() {
     return require('./FBAppEventsLogger');
   },
+  get AppInviteDialog() {
+    return require('./FBAppInviteDialog');
+  },
   get GameRequestDialog() {
     return require('./FBGameRequestDialog');
   },
@@ -65,6 +68,9 @@ module.exports = {
   },
 
   //native components
+  get LikeView() {
+    return require('./FBLikeView');
+  },
   get LoginButton() {
     return require('./FBLoginButton');
   },

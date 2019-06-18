@@ -21,6 +21,7 @@
 package com.facebook.reactnative.androidsdk;
 
 import android.app.Activity;
+import android.content.Intent;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -29,6 +30,7 @@ import com.facebook.login.LoginBehavior;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -38,6 +40,9 @@ import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -130,20 +135,38 @@ public class FBLoginManagerModule extends ReactContextBaseJavaModule {
     }
 
     /**
-     * Attempts a Facebook login with the specified permissions.
-     * @param permissions must be one of the provided permissions. See
+     * Attempts a Facebook login with the specified read permissions.
+     * @param permissions must be one of the provided read permissions. See
      *                    <a href="https://developers.facebook.com/docs/facebook-login/permissions">
      *                    Facebook login permissions</a>.
      * @param promise Use promise to pass login result to JS after login finish.
      */
     @ReactMethod
-    public void logInWithPermissions(ReadableArray permissions, final Promise promise) {
+    public void logInWithReadPermissions(ReadableArray permissions, final Promise promise) {
         final LoginManager loginManager = LoginManager.getInstance();
         loginManager.registerCallback(mCallbackManager, new LoginManagerCallback(promise));
         Activity activity = getCurrentActivity();
         if (activity != null) {
-            loginManager.logIn(activity,
-                    Utility.reactArrayToStringList(permissions));
+            loginManager.logInWithReadPermissions(activity,
+                    reactArrayToJavaStringCollection(permissions));
+        }
+    }
+
+    /**
+     * Attempts a Facebook login with the specified publish permissions.
+     * @param permissions must be one of the provided publish permissions. See
+     *                    <a href="https://developers.facebook.com/docs/facebook-login/permissions">
+     *                    Facebook login permissions</a>.
+     * @param promise Use promise to pass login result to JS after login finish.
+     */
+    @ReactMethod
+    public void logInWithPublishPermissions(ReadableArray permissions, final Promise promise) {
+        final LoginManager loginManager = LoginManager.getInstance();
+        loginManager.registerCallback(mCallbackManager, new LoginManagerCallback(promise));
+        Activity activity = getCurrentActivity();
+        if (activity != null) {
+            loginManager.logInWithPublishPermissions(activity,
+                    reactArrayToJavaStringCollection(permissions));
         }
     }
 
@@ -153,5 +176,13 @@ public class FBLoginManagerModule extends ReactContextBaseJavaModule {
             array.pushString(e);
         }
         return array;
+    }
+
+    private static Collection<String> reactArrayToJavaStringCollection(ReadableArray array) {
+        HashSet<String> set = new HashSet<>();
+        for (int i = 0; i < array.size(); i++) {
+            set.add(array.getString(i));
+        }
+        return Collections.unmodifiableSet(set);
     }
 }

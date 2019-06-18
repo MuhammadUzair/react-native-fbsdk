@@ -28,7 +28,6 @@ RCT_ENUM_CONVERTER(FBSDKShareDialogMode, (@{
   @"automatic": @(FBSDKShareDialogModeAutomatic),
   @"browser": @(FBSDKShareDialogModeBrowser),
   @"webview": @(FBSDKShareDialogModeWeb),
-  @"native": @(FBSDKShareDialogModeNative),
 }), FBSDKShareDialogModeAutomatic, unsignedLongValue)
 
 @end
@@ -62,20 +61,17 @@ RCT_EXPORT_MODULE(FBShareDialog);
 
 RCT_EXPORT_METHOD(canShow:(RCTFBSDKSharingContent)content resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-  _shareDialog.shareContent = nil;
-  dispatch_async(dispatch_get_main_queue(), ^{
-    if ([self->_shareDialog canShow]) {
-      self->_shareDialog.shareContent = content;
-      NSError *error;
-      if ([self->_shareDialog validateWithError:&error]) {
-        resolve(@YES);
-      } else {
-        reject(@"FacebookSDK", @"SharingContent is invalid", error);
-      }
+  _shareDialog.shareContent = content;
+  if ([_shareDialog canShow]) {
+    NSError *error;
+    if ([_shareDialog validateWithError:&error]) {
+      resolve(@YES);
     } else {
-      resolve(@NO);
+      reject(@"FacebookSDK", @"SharingContent is invalid", error);
     }
-  });
+  } else {
+    resolve(@NO);
+  }
 }
 
 RCT_EXPORT_METHOD(show:(RCTFBSDKSharingContent)content
@@ -86,10 +82,10 @@ RCT_EXPORT_METHOD(show:(RCTFBSDKSharingContent)content
   _showReject = reject;
   _shareDialog.shareContent = content;
   dispatch_async(dispatch_get_main_queue(), ^{
-    if (!self->_shareDialog.fromViewController) {
-      self->_shareDialog.fromViewController = RCTPresentedViewController();
+    if (!_shareDialog.fromViewController) {
+      _shareDialog.fromViewController = RCTPresentedViewController();
     }
-    [self->_shareDialog show];
+    [_shareDialog show];
   });
 }
 

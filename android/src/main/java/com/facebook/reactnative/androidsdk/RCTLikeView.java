@@ -16,56 +16,33 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- *
- * @flow
- * @format
  */
-'use strict';
 
-import PropTypes from 'prop-types';
-import * as React from 'react';
-import {requireNativeComponent, StyleSheet, ViewPropTypes} from 'react-native';
+package com.facebook.reactnative.androidsdk;
 
-import type {ShareContent} from './models/FBShareContent';
+import android.content.Context;
 
-class SendButton extends React.Component<{
-  /**
-   * Content to be shared.
-   */
-  shareContent: ShareContent,
+import com.facebook.react.uimanager.ThemedReactContext;
+import com.facebook.share.widget.LikeView;
 
-  /**
-   * View style, if any.
-   */
-  style?: any,
-}> {
-  static defaultProps: {
-    style: typeof styles.defaultButtonStyle,
-  };
+public class RCTLikeView extends LikeView {
+    public RCTLikeView(ThemedReactContext context) {
+        super(context);
+    }
 
-  render() {
-    return <RCTFBSendButton {...this.props} />;
-  }
+    private final Runnable measureAndLayout = new Runnable() {
+        @Override
+        public void run() {
+            measure(
+                    MeasureSpec.makeMeasureSpec(getWidth(), MeasureSpec.EXACTLY),
+                    MeasureSpec.makeMeasureSpec(getHeight(), MeasureSpec.EXACTLY));
+            layout(getLeft(), getTop(), getRight(), getBottom());
+        }
+    };
+
+    @Override
+    public void requestLayout() {
+        super.requestLayout();
+        post(measureAndLayout);
+    }
 }
-
-/* $FlowFixMe(>=0.43.0) - Remove this comment to see errors found when Flow
- * v0.43.0 was deployed */
-SendButton.propTypes = {
-  ...ViewPropTypes,
-  shareContent: PropTypes.object,
-};
-
-const styles = StyleSheet.create({
-  defaultButtonStyle: {
-    height: 30,
-    width: 80,
-  },
-});
-
-SendButton.defaultProps = {
-  style: styles.defaultButtonStyle,
-};
-
-const RCTFBSendButton = requireNativeComponent('RCTFBSendButton', SendButton);
-
-module.exports = SendButton;

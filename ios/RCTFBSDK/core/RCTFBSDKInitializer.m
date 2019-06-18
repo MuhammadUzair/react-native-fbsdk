@@ -16,27 +16,38 @@
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#import "RCTConvert+FBSDKLogin.h"
 
-@implementation RCTConvert(FBSDKLogin)
+#import <React/RCTBridgeModule.h>
 
-RCT_ENUM_CONVERTER(FBSDKLoginBehavior, (@{
-  @"native": @(FBSDKLoginBehaviorNative),
-  @"browser": @(FBSDKLoginBehaviorBrowser),
-  @"system_account": @(FBSDKLoginBehaviorSystemAccount),
-  @"web": @(FBSDKLoginBehaviorWeb),
-}), FBSDKLoginBehaviorNative, unsignedLongValue)
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
 
-RCT_ENUM_CONVERTER(FBSDKDefaultAudience, (@{
-  @"friends": @(FBSDKDefaultAudienceFriends),
-  @"everyone": @(FBSDKDefaultAudienceEveryone),
-  @"only_me": @(FBSDKDefaultAudienceOnlyMe),
-}), FBSDKDefaultAudienceFriends, unsignedLongValue)
+@interface FBSDKSettings (UserAgent)
 
-RCT_ENUM_CONVERTER(FBSDKLoginButtonTooltipBehavior, (@{
-  @"auto": @(FBSDKLoginButtonTooltipBehaviorAutomatic),
-  @"force_display": @(FBSDKLoginButtonTooltipBehaviorForceDisplay),
-  @"disable": @(FBSDKLoginButtonTooltipBehaviorDisable),
-}), FBSDKLoginButtonTooltipBehaviorAutomatic, unsignedIntegerValue)
++ (void)setUserAgentSuffix:(NSString *)suffix;
+
+@end
+
+
+@interface RCTFBSDKInitializer: NSObject <RCTBridgeModule>
+@end
+
+@implementation RCTFBSDKInitializer
+
+#pragma mark - Object Lifecycle
+
+RCT_EXPORT_MODULE();
+
+- (instancetype)init
+{
+  if ((self = [super init])) {
+    [FBSDKSettings setUserAgentSuffix:@"ReactNative-v0.7.0"];
+  }
+  return self;
+}
+
++ (BOOL)requiresMainQueueSetup
+{
+  return YES;
+}
 
 @end

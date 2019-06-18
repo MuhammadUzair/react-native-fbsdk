@@ -26,13 +26,48 @@ import PropTypes from 'prop-types';
 import * as React from 'react';
 import {requireNativeComponent, StyleSheet, ViewPropTypes} from 'react-native';
 
-import type {ShareContent} from './models/FBShareContent';
+import type {ObjectIdAndType} from './models/FBObjectIdAndType';
 
-class SendButton extends React.Component<{
+type AuxiliaryViewPosition = 'top' | 'bottom' | 'inline';
+type HorizontalAlignment = 'center' | 'left' | 'right';
+type LikeViewStyle =
+  | 'button' //Note 'button' is only available on Android.
+  | 'standard'
+  | 'box_count';
+
+/**
+ * UI control to like an object in the Facebook graph.
+ */
+class LikeView extends React.Component<{
   /**
-   * Content to be shared.
+   * The objectId and type for the object to like.
    */
-  shareContent: ShareContent,
+  objectIdAndType: ObjectIdAndType,
+
+  /**
+   * The style to use for the receiver.  Distinct from React styling.
+   */
+  likeViewStyle?: LikeViewStyle,
+
+  /**
+   * The position for the auxiliary view for the receiver.
+   */
+  auxiliaryViewPosition?: AuxiliaryViewPosition,
+
+  /**
+   * The text alignment of the social sentence.
+   */
+  horizontalAlignment?: HorizontalAlignment,
+
+  /**
+   * The foreground color to use for the content of the receiver.
+   */
+  foregroundColor?: number,
+
+  /**
+   * If true, a sound is played when the receiver is toggled.
+   */
+  soundEnabled?: boolean,
 
   /**
    * View style, if any.
@@ -44,28 +79,31 @@ class SendButton extends React.Component<{
   };
 
   render() {
-    return <RCTFBSendButton {...this.props} />;
+    return <RCTFBLikeView {...this.props} />;
   }
 }
 
 /* $FlowFixMe(>=0.43.0) - Remove this comment to see errors found when Flow
  * v0.43.0 was deployed */
-SendButton.propTypes = {
+LikeView.propTypes = {
   ...ViewPropTypes,
-  shareContent: PropTypes.object,
+  objectIdAndType: PropTypes.object.isRequired,
+  likeViewStyle: PropTypes.oneOf(['standard', 'button', 'box_count']),
+  auxiliaryViewPosition: PropTypes.oneOf(['top', 'bottom', 'inline']),
+  horizontalAlignment: PropTypes.oneOf(['center', 'left', 'right']),
+  foregroundColor: PropTypes.number,
+  soundEnabled: PropTypes.bool,
 };
 
 const styles = StyleSheet.create({
   defaultButtonStyle: {
-    height: 30,
-    width: 80,
+    height: 65,
+    width: 300,
   },
 });
 
-SendButton.defaultProps = {
-  style: styles.defaultButtonStyle,
-};
+LikeView.defaultProps = {style: styles.defaultButtonStyle};
 
-const RCTFBSendButton = requireNativeComponent('RCTFBSendButton', SendButton);
+const RCTFBLikeView = requireNativeComponent('RCTFBLikeView', LikeView);
 
-module.exports = SendButton;
+module.exports = LikeView;
